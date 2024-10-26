@@ -230,6 +230,7 @@ const ganadores = async (req, res) => {
 
     const {valor} = req.params
     console.log (valor)
+    
 
     try {
         // Verificar si el código ya fue utilizado
@@ -243,10 +244,28 @@ const ganadores = async (req, res) => {
                     console.log("Este es el id del registro"+" "+registro.codigoNumero)
                     //const usadoCodigo = await regisCodigo.findOne({ codigoNumero: registro.codigoNumero });
                     const usadoCodigo = await regisCodigo.findOne({codigoNumero: registro.codigoNumero});
-                    console.log(usadoCodigo+""+"Estos son los codigos registrados")
-                    const usuario = await  infouser.findOne({ usuario: usadoCodigo.usuario });
-                   console.log(usuario+""+" Informacion de usuario")
+                    if ( usadoCodigo !== null){
+                        const usuario = await  infouser.findOne({ usuario: usadoCodigo.usuario });
+                        console.log(usuario+""+"Usuarios antes del if")
+                        if ( usuario !== null){
+                            console.log(usuario)
+                        console.log(usadoCodigo+""+"Estos son los codigos registrados")
                    return {
+
+                        fecha: usadoCodigo.fecha,
+                        nombre: usuario.nombre,
+                        cedula: usuario.cedula,
+                        telefono: usuario.telefono,
+                        codigo: usadoCodigo.codigoNumero,
+                        premio: registro ? registro.premio : null,
+                    };
+                        }
+                    }
+            
+                    
+                    //const usuario = await  infouser.findOne({ usuario: usadoCodigo.usuario });
+                   
+                   /*return {
 
                         fecha: usadoCodigo.fecha,
                         nombre: usuario.nombre,
@@ -254,16 +273,16 @@ const ganadores = async (req, res) => {
                         telefono: usuario.telefono,
                         codigo: "xx",
                         premio: registro ? registro.premio : null,
-                    };
+                    };*/
 
                 }
             })
         );
 
-        const resultadosFiltrados = resultados.filter(resultado => resultado !== undefined && resultado !== null);
+       const resultadosFiltrados = resultados.filter(resultado => resultado !== undefined );
 
        
-        res.json(resultadosFiltrados)
+       res.json(resultadosFiltrados)
 
     } catch (err) {
         console.log(err);
